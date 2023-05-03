@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAviasSales;
-using WebAviasSales.DB;
+using WebTheBestCursach.DB;
+using WebTheBestCursach.Models;
 
 namespace WebTheBestCursach.Controllers
 {
@@ -15,6 +16,7 @@ namespace WebTheBestCursach.Controllers
     public class DocumetsController : ControllerBase
     {
         private readonly user05Context _context;
+        private int input;
 
         public DocumetsController(user05Context context)
         {
@@ -22,11 +24,14 @@ namespace WebTheBestCursach.Controllers
         }
 
         // GET: api/Documets
-        [HttpGet]
+        [HttpPost("list")]
         public async Task<ActionResult<IEnumerable<Documet>>> GetDocumets()
         {
             return await _context.Documets.ToListAsync();
         }
+
+        
+
 
         // GET: api/Documets/5
         [HttpGet("{id}")]
@@ -44,15 +49,14 @@ namespace WebTheBestCursach.Controllers
 
         // PUT: api/Documets/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDocumet(int id, Documet documet)
+        [HttpPost("put")]
+        public async Task<IActionResult> PutDocument([FromBody] Documet documet)
         {
-            if (id != documet.DocumetId)
-            {
-                return BadRequest();
-            }
+            input = documet.DocumetId;
 
-            _context.Entry(documet).State = EntityState.Modified;
+            var origin = _context.Documets.Find(input);
+
+            _context.Entry(origin).CurrentValues.SetValues(documet);
 
             try
             {
@@ -60,7 +64,7 @@ namespace WebTheBestCursach.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DocumetExists(id))
+                if (!DocumetExists(input))
                 {
                     return NotFound();
                 }
@@ -75,7 +79,7 @@ namespace WebTheBestCursach.Controllers
 
         // POST: api/Documets
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("save")]
         public async Task<ActionResult<Documet>> PostDocumet(Documet documet)
         {
             _context.Documets.Add(documet);

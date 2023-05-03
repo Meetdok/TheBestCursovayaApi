@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAviasSales;
-using WebAviasSales.DB;
+using WebTheBestCursach.DB;
+using WebTheBestCursach.Models;
 
 namespace WebTheBestCursach.Controllers
 {
@@ -15,6 +16,7 @@ namespace WebTheBestCursach.Controllers
     public class AduccationFormsController : ControllerBase
     {
         private readonly user05Context _context;
+        private int input;
 
         public AduccationFormsController(user05Context context)
         {
@@ -22,10 +24,10 @@ namespace WebTheBestCursach.Controllers
         }
 
         // GET: api/AduccationForms
-        [HttpGet]
+        [HttpPost("list")]
         public async Task<ActionResult<IEnumerable<AduccationForm>>> GetAduccationForms()
         {
-            return await _context.AduccationForms.ToListAsync();
+            return await _context.AduccationForms.Include(s=>s.Documents).Include(s=>s.Speciality).ToListAsync();
         }
 
         // GET: api/AduccationForms/5
@@ -41,18 +43,18 @@ namespace WebTheBestCursach.Controllers
 
             return aduccationForm;
         }
-
+       
         // PUT: api/AduccationForms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAduccationForm(int id, AduccationForm aduccationForm)
+        [HttpPost("put")]
+        public async Task<IActionResult> PutAduccationForm([FromBody] AduccationForm aduccationForm)
         {
-            if (id != aduccationForm.DefaultListId)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(aduccationForm).State = EntityState.Modified;
+            input = aduccationForm.DefaultListId;
+
+            var origin = _context.AduccationForms.Find(input);
+
+            _context.Entry(origin).CurrentValues.SetValues(aduccationForm);
 
             try
             {
@@ -60,7 +62,7 @@ namespace WebTheBestCursach.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AduccationFormExists(id))
+                if (!AduccationFormExists(input))
                 {
                     return NotFound();
                 }
@@ -75,7 +77,7 @@ namespace WebTheBestCursach.Controllers
 
         // POST: api/AduccationForms
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("save")]
         public async Task<ActionResult<AduccationForm>> PostAduccationForm(AduccationForm aduccationForm)
         {
             _context.AduccationForms.Add(aduccationForm);
@@ -85,8 +87,8 @@ namespace WebTheBestCursach.Controllers
         }
 
         // DELETE: api/AduccationForms/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAduccationForm(int id)
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteAduccationForm([FromBody]int id)
         {
             var aduccationForm = await _context.AduccationForms.FindAsync(id);
             if (aduccationForm == null)

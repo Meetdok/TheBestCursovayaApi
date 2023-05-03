@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebAviasSales
+namespace WebTheBestCursach.Models
 {
     public partial class LoginPage
     {
@@ -12,7 +12,7 @@ namespace WebAviasSales
 
         public int Id { get; set; }
         public string? Login { get; set; }
-        public string? Password { get; set; }    
+        public string? Password { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
     }

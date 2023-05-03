@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebAviasSales
+namespace WebTheBestCursach.Models
 {
     public partial class Documet
     {
@@ -14,7 +14,7 @@ namespace WebAviasSales
         public DateTime? BirthdayDate { get; set; }
         public string? BirthPlace { get; set; }
         public int? Snils { get; set; }
-        public int? Inn { get; set; }
+        public long? Inn { get; set; }
         public string? Addres { get; set; }
         public string? Nationality { get; set; }
         public int? PassSeries { get; set; }

@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAviasSales;
-using WebAviasSales.DB;
+using WebTheBestCursach.DB;
+using WebTheBestCursach.Models;
 
 namespace WebAviasSales.Controllers
 {
@@ -75,7 +76,7 @@ namespace WebAviasSales.Controllers
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("SaveUser")]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             _context.Users.Add(user);

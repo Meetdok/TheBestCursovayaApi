@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAviasSales;
-using WebAviasSales.DB;
+using WebTheBestCursach.DB;
+using WebTheBestCursach.Models;
 
 namespace WebTheBestCursach.Controllers
 {
@@ -22,7 +23,7 @@ namespace WebTheBestCursach.Controllers
         }
 
         // GET: api/Roles
-        [HttpGet]
+        [HttpPost("list")]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
             return await _context.Roles.ToListAsync();
@@ -75,7 +76,7 @@ namespace WebTheBestCursach.Controllers
 
         // POST: api/Roles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("save")]
         public async Task<ActionResult<Role>> PostRole(Role role)
         {
             _context.Roles.Add(role);
@@ -85,7 +86,7 @@ namespace WebTheBestCursach.Controllers
         }
 
         // DELETE: api/Roles/5
-        [HttpDelete("{id}")]
+        [HttpPost("delete")]
         public async Task<IActionResult> DeleteRole(int id)
         {
             var role = await _context.Roles.FindAsync(id);

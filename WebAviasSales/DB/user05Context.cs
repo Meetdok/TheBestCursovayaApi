@@ -2,21 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using WebTheBestCursach.Models;
 
-namespace WebAviasSales.DB
+namespace WebTheBestCursach.DB
 {
     public partial class user05Context : DbContext
     {
         public user05Context()
         {
-        }
-
-        static user05Context instance;
-        public static user05Context GetInstance()
-        {
-            if (instance == null)
-                instance = new user05Context();
-            return instance;
         }
 
         public user05Context(DbContextOptions<user05Context> options)
@@ -27,6 +20,7 @@ namespace WebAviasSales.DB
         public virtual DbSet<AduccationForm> AduccationForms { get; set; } = null!;
         public virtual DbSet<Documet> Documets { get; set; } = null!;
         public virtual DbSet<EducationForm> EducationForms { get; set; } = null!;
+        public virtual DbSet<EducationFormBySpeciality> EducationFormBySpecialities { get; set; } = null!;
         public virtual DbSet<LoginPage> LoginPages { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Speciality> Specialities { get; set; } = null!;
@@ -54,26 +48,11 @@ namespace WebAviasSales.DB
 
                 entity.Property(e => e.DocumentsId).HasColumnName("DocumentsID");
 
-                entity.Property(e => e.Fluorography)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.Property(e => e.MedicalPolicy).HasColumnName("Medical_policy");
 
-                entity.Property(e => e.MedicalPolicy)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("Medical_policy");
+                entity.Property(e => e.PrimingCertificate).HasColumnName("Priming_certificate");
 
-                entity.Property(e => e.PatronicName).HasMaxLength(50);
-
-                entity.Property(e => e.PrimingCertificate)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("Priming_certificate");
-
-                entity.Property(e => e.RegistrationCertificate)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("Registration_certificate");
+                entity.Property(e => e.RegistrationCertificate).HasColumnName("Registration_certificate");
 
                 entity.Property(e => e.SpecialityId).HasColumnName("SpecialityID");
 
@@ -113,6 +92,24 @@ namespace WebAviasSales.DB
                 entity.ToTable("EducationForm");
 
                 entity.Property(e => e.EducationFormId).HasColumnName("EducationFormID");
+            });
+
+            modelBuilder.Entity<EducationFormBySpeciality>(entity =>
+            {
+                entity.HasKey(e => e.EducationFormBySpecialitiesId);
+
+                entity.Property(e => e.EducationFormBySpecialitiesId).HasColumnName("EducationFormBySpecialitiesID");
+
+                entity.HasOne(d => d.EducationForm)
+                    .WithMany(p => p.EducationFormBySpecialities)
+                    .HasForeignKey(d => d.EducationFormId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EducationFormBySpecialities_EducationForm");
+
+                entity.HasOne(d => d.Speciality)
+                    .WithMany(p => p.EducationFormBySpecialities)
+                    .HasForeignKey(d => d.SpecialityId)
+                    .HasConstraintName("FK_EducationFormBySpecialities_Speciality");
             });
 
             modelBuilder.Entity<LoginPage>(entity =>

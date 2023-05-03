@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAviasSales;
-using WebAviasSales.DB;
+using WebTheBestCursach.DB;
+using WebTheBestCursach.Models;
 
 namespace WebAviasSales.Controllers
 {
@@ -15,6 +16,7 @@ namespace WebAviasSales.Controllers
     public class SpecialitiesController : ControllerBase
     {
         private readonly user05Context _context;
+        private int input;
 
         public SpecialitiesController(user05Context context)
         {
@@ -22,7 +24,7 @@ namespace WebAviasSales.Controllers
         }
 
         // GET: api/Specialities
-        [HttpGet]
+        [HttpPost("list")]
         public async Task<ActionResult<IEnumerable<Speciality>>> GetSpecialities()
         {
             return await _context.Specialities.ToListAsync();
@@ -44,15 +46,14 @@ namespace WebAviasSales.Controllers
 
         // PUT: api/Specialities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSpeciality(int id, Speciality speciality)
+        [HttpPost("put")]
+        public async Task<IActionResult> PutSpecialities([FromBody] Speciality speciality)
         {
-            if (id != speciality.SpecialityId)
-            {
-                return BadRequest();
-            }
+            input = speciality.SpecialityId;
 
-            _context.Entry(speciality).State = EntityState.Modified;
+            var origin = _context.Specialities.Find(input);
+
+            _context.Entry(origin).CurrentValues.SetValues(speciality);
 
             try
             {
@@ -60,7 +61,7 @@ namespace WebAviasSales.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SpecialityExists(id))
+                if (!SpecialityExists(input))
                 {
                     return NotFound();
                 }
@@ -73,9 +74,11 @@ namespace WebAviasSales.Controllers
             return NoContent();
         }
 
+
+
         // POST: api/Specialities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("save")]
         public async Task<ActionResult<Speciality>> PostSpeciality(Speciality speciality)
         {
             _context.Specialities.Add(speciality);
@@ -85,8 +88,8 @@ namespace WebAviasSales.Controllers
         }
 
         // DELETE: api/Specialities/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSpeciality(int id)
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteSpeciality([FromBody]int id)
         {
             var speciality = await _context.Specialities.FindAsync(id);
             if (speciality == null)

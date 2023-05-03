@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAviasSales;
-using WebAviasSales.DB;
+using WebTheBestCursach.DB;
+using WebTheBestCursach.Models;
 
 namespace WebTheBestCursach.Controllers
 {
@@ -15,6 +16,7 @@ namespace WebTheBestCursach.Controllers
     public class EducationFormsController : ControllerBase
     {
         private readonly user05Context _context;
+        private int input;
 
         public EducationFormsController(user05Context context)
         {
@@ -22,7 +24,7 @@ namespace WebTheBestCursach.Controllers
         }
 
         // GET: api/EducationForms
-        [HttpGet]
+        [HttpPost("list")]
         public async Task<ActionResult<IEnumerable<EducationForm>>> GetEducationForms()
         {
             return await _context.EducationForms.ToListAsync();
@@ -44,15 +46,14 @@ namespace WebTheBestCursach.Controllers
 
         // PUT: api/EducationForms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEducationForm(int id, EducationForm educationForm)
+        [HttpPost("put")]
+        public async Task<IActionResult> PutEducationForm([FromBody] EducationForm educationForm)
         {
-            if (id != educationForm.EducationFormId)
-            {
-                return BadRequest();
-            }
+            input = educationForm.EducationFormId;
 
-            _context.Entry(educationForm).State = EntityState.Modified;
+            var origin = _context.EducationForms.Find(input);
+
+            _context.Entry(origin).CurrentValues.SetValues(educationForm);
 
             try
             {
@@ -60,7 +61,7 @@ namespace WebTheBestCursach.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EducationFormExists(id))
+                if (!EducationFormExists(input))
                 {
                     return NotFound();
                 }
@@ -75,7 +76,7 @@ namespace WebTheBestCursach.Controllers
 
         // POST: api/EducationForms
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("save")]
         public async Task<ActionResult<EducationForm>> PostEducationForm(EducationForm educationForm)
         {
             _context.EducationForms.Add(educationForm);
@@ -85,8 +86,8 @@ namespace WebTheBestCursach.Controllers
         }
 
         // DELETE: api/EducationForms/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEducationForm(int id)
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteEducationForm([FromBody]int id)
         {
             var educationForm = await _context.EducationForms.FindAsync(id);
             if (educationForm == null)

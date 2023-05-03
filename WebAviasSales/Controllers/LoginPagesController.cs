@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAviasSales;
 using WebAviasSales.Controllers;
-using WebAviasSales.DB;
+using WebTheBestCursach.DB;
+using WebTheBestCursach.Models;
 
 namespace WebTheBestCursach.Controllers
 {
@@ -30,6 +31,8 @@ namespace WebTheBestCursach.Controllers
 
             return login ?? new LoginPage();
         }
+
+      
 
         // GET: api/LoginPages
         [HttpGet]
@@ -85,7 +88,7 @@ namespace WebTheBestCursach.Controllers
 
         // POST: api/LoginPages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("SaveLogin")]
         public async Task<ActionResult<LoginPage>> PostLoginPage(LoginPage loginPage)
         {
             _context.LoginPages.Add(loginPage);
@@ -93,6 +96,7 @@ namespace WebTheBestCursach.Controllers
 
             return CreatedAtAction("GetLoginPage", new { id = loginPage.Id }, loginPage);
         }
+      
 
         // DELETE: api/LoginPages/5
         [HttpDelete("{id}")]

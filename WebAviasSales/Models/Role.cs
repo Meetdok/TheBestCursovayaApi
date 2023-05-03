@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebAviasSales
+namespace WebTheBestCursach.Models
 {
     public partial class Role
     {
